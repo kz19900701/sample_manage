@@ -1,0 +1,71 @@
+{% extends 'sample_manage/base.html' %}
+{% load static %}
+{% block title %}样本上传{% endblock %}
+{% block sidenav %}
+{#    <li ><a href="add_monitor">添加监控<span class="sr-only">(current)</span></a>#}
+{#    </li>#}
+    <li><a href="{% url 'sample_manage:sample_upload_html' %}">样本上传</a></li>
+    <li><a href="{% url 'sample_manage:sample_distribute_html' %}">样本分发</a></li>
+    <li><a href="{% url 'sample_manage:sample_compare_html' %}">样本对比</a></li>
+    <li><a href="{% url 'sample_manage:sample_merge_html' %}">样本合并</a></li>
+    <li><a href="{% url 'sample_manage:sample_statistics_html' %}">样本统计</a></li>
+    <li class="active"><a href="{% url 'sample_manage:sample_download_html' %}">样本下载</a></li>
+    <li><a href="{% url 'sample_manage:sample_delete_html' %}">样本删除</a></li>
+
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <h2>样本下载</h2>
+            <hr/>
+
+            <form class="form-horizontal" role="form" method="post" action="{% url 'sample_manage:sample_download_api' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                      <label for="name" class="col-md-2 control-label">选择批次</label>
+                      <div class="col-md-3">
+                        <select id="download_settings_list" name="settings_id" class="form-control">
+                                {% for result in result_list %}
+                                    <option class="form-control" name="settings_id2name" value="{{ result.id }}">{{ result.id2name }}</option>
+                                {% endfor %}
+                        </select>
+                      </div>
+                    <label for="name" class="col-md-3 control-label"><a href="#" onclick="query_data_function2();">查看合并情况</a></label>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3">
+                        <button  class="btn btn-danger" type="submit" >确认下载</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/merge.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+            });
+        });
+
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}

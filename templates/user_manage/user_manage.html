@@ -1,0 +1,64 @@
+{% extends 'user_manage/base.html' %}
+{% load static %}
+{% block title %}用户后台管理界面{% endblock %}
+{% block sidenav %}
+{% endblock %}
+{%  block css %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <ol class="breadcrumb">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Library</a></li>
+          <li class="active">Data</li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="table-responsive col-md-7">
+            <table class="table table-hover">
+                <caption><h3>认证和授权 管理</h3></caption>
+                <thead>
+                    <tr>
+                        <th>用户认证和授权</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row"><a>用户</a></td>
+                        <td style="float: right">
+                            <a href="#" class="btn btn-info btn-sm">
+                              <span class="glyphicon glyphicon-plus"></span> 增加
+                            </a>
+                            <a href="#" class="btn btn-danger btn-sm">
+                              <span class="glyphicon glyphicon-pencil"></span> 修改
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/sampleupload.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+            });
+        });
+
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends 'sample_manage/base.html' %}
+{% load static %}
+{% block title %}样本上传{% endblock %}
+{% block sidenav %}
+{#    <li ><a href="add_monitor">添加监控<span class="sr-only">(current)</span></a>#}
+{#    </li>#}
+    <li class="active"><a href="{% url 'sample_manage:sample_upload_html' %}">样本上传</a></li>
+    <li><a href="{% url 'sample_manage:sample_distribute_html' %}">样本分发</a></li>
+    <li><a href="{% url 'sample_manage:sample_compare_html' %}">样本对比</a></li>
+    <li><a href="{% url 'sample_manage:sample_merge_html' %}">样本合并</a></li>
+    <li><a href="{% url 'sample_manage:sample_statistics_html' %}">样本统计</a></li>
+    <li><a href="{% url 'sample_manage:sample_download_html' %}">样本下载</a></li>
+    <li><a href="{% url 'sample_manage:sample_delete_html' %}">样本删除</a></li>
+
+
+{% endblock %}
+{%  block css %}
+    <style type="text/css">
+        #span_error{
+            font-weight: bold;
+            color: #EE2D2D;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <h2>样本上传</h2>
+            <hr/>
+
+
+            <form class="form-horizontal" role="form" method="POST" action="{% url 'sample_manage:sample_upload_api' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="doc_file" class="col-md-3 control-label">文档上传</label>
+                    <div class="col-md-5">
+                        <input type="file" id="doc_file" name="doc_file">
+                    </div>
+                    <span id="span_error">{{ error.doc_file.0 }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="sample_file" class="col-md-3 control-label">样本选择</label>
+                    <div class="col-md-5">
+                        <input type="file" id="upload_file" name="upload_file">
+                    </div>
+                    <span id="span_error">{{ error.upload_file.0 }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-md-3 control-label">Name</label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="请输入Name" />
+                    </div>
+                    <span id="span_error">{{ error.name.0 }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="settings" class="col-md-3 control-label">Settings</label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="settings" name="settings" placeholder="请输入Settings,必须用英文逗号隔开">
+                    </div>
+                    <span id="span_error">{{ error.settings.0 }}</span>
+                </div>
+                <div class="form-group">
+                    <label for="setting_type" class="col-md-3 control-label">Setting_Type</label>
+                    <div class="col-md-5">
+                        <select id="setting_type" name="setting_type" class="form-control">
+                            <option class="form-control"  value="classfy">classfy</option>
+                            <option class="form-control"  value="extract">extract</option>
+                            <option class="form-control"  value="relation">relation</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="is_single" class="col-md-3 control-label">是否单选</label>
+                    <div class="col-md-5">
+                        <select id="is_single" name="is_single" class="form-control">
+                            <option class="form-control"  value="1">是</option>
+                            <option class="form-control"  value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <hr/>
+                <div class="form-group">
+                    <div class="col-md-offset-7">
+                        <button type="submit"  class="btn btn-danger" >确认并上传</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+            <h2>上传结果</h2>
+            <hr/>
+            <form class="form-horizontal" role="form" >
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label" name="setting_name">Setting.name</label>
+                    <div id="setting_name" name="setting_name" class="col-md-5">
+                        <input style="border: 0px;outline:none;cursor: pointer;" type="text" id="setting_name" name="setting_name"  value="{{ content.setting_name }}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">样本数量</label>
+                    <div class="col-md-5">
+                        {{ content.sum_count }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">Group数量</label>
+                    <div class="col-md-5">
+                        {{ content.group_count }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">上传失败</label>
+                    <div class="col-md-5">
+                        {% if rollback_str_list %}
+                            {% for item in rollback_str_list %}
+                                {{ item }}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+{#                <div class="form-group">#}
+{#                    <div class="col-md-offset-7">#}
+{#                        {% if content.delete_sample_flag %}#}
+{#                            <button type="submit" class="btn btn-danger">删除样本</button>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+{#                </div>#}
+            </form>
+
+
+        </div>
+    </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/sampleupload.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+            });
+        });
+
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}

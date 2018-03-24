@@ -1,0 +1,120 @@
+{% extends 'sample_manage/base.html' %}
+{% load static %}
+{% block title %}样本上传{% endblock %}
+{% block sidenav %}
+{#    <li ><a href="add_monitor">添加监控<span class="sr-only">(current)</span></a>#}
+{#    </li>#}
+    <li><a href="{% url 'sample_manage:sample_upload_html' %}">样本上传</a></li>
+    <li><a href="{% url 'sample_manage:sample_distribute_html' %}">样本分发</a></li>
+    <li><a href="{% url 'sample_manage:sample_compare_html' %}">样本对比</a></li>
+    <li><a href="{% url 'sample_manage:sample_merge_html' %}">样本合并</a></li>
+    <li class="active"><a href="{% url 'sample_manage:sample_statistics_html' %}">样本统计</a></li>
+    <li><a href="{% url 'sample_manage:sample_download_html' %}">样本下载</a></li>
+    <li><a href="{% url 'sample_manage:sample_delete_html' %}">样本删除</a></li>
+
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <h2>样本统计</h2>
+            <hr/>
+
+            <form name="stat_form" class="form-horizontal" role="form" method="post" action="{% url 'sample_manage:sample_stat_api' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                      <label for="name" class="col-md-2 control-label">选择批次</label>
+                      <div class="col-md-3">
+                            <select id="stat_settings_list" name="settings_id" class="form-control" onchange="stat_query();">
+                                    {% for result in result_list %}
+                                        <option class="form-control" name="settings_id2name" value="{{ result.id }}">{{ result.id2name }}</option>
+                                    {% endfor %}
+                            </select>
+                      </div>
+                    <label for="name" class="col-md-3 control-label"><a href="#" onclick="query_data_function3();">查看合并情况</a></label>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3">
+                        <button  class="btn btn-danger" type="submit"  >开始统计</button>
+                        <div>
+                            <a id="fpm_in" style="display: none" href="#"></a>
+                            <br/>
+                            <a id="fpm_out" style="display: none" href="#"></a>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/merge.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            stat_query()
+        });
+
+
+        function stat_download1() {
+            var settings_id = $('#stat_settings_list option:selected').val();
+            data = {
+                database:$('#fpm_in').val(),
+                settings_id:settings_id,
+            }
+            $.ajax({
+                url:'stat_download_api',
+                type:"POST",
+                cache:false,
+                async:true,
+                data:data,
+                timeout: 60 * 1000,
+
+            });
+        }
+
+        function stat_query() {
+            var setting_id = $('#stat_settings_list option:selected').val();
+            var setting_name = $('#stat_settings_list option:selected').text();
+            data = {
+                setting_id:setting_id
+            }
+            url = 'stat_status_query_api';
+            $.ajax({
+                type:"post",
+                url:url,
+                data:data,
+                success:function (result) {
+                    if (result.is_finish_stat){
+                        $("#fpm_in").text(setting_name+"_"+result['fpm_in']+"统计结果")
+                        $("#fpm_in").attr("href","download_stat_file-"+setting_id+"-"+result['fpm_in'])
+                        $("#fpm_out").text(setting_name+"_"+result['fpm_out']+"统计结果")
+                        $("#fpm_out").attr('href',"download_stat_file-"+setting_id+"-"+result['fpm_out'])
+                        $("#fpm_in").show()
+                        $("#fpm_out").show()
+                    }else {
+                        $("#fpm_in").hide()
+                        $("#fpm_out").hide()
+                    }
+
+                }
+            });
+        }
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}

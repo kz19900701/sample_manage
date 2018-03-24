@@ -1,0 +1,107 @@
+{% extends 'sample_manage/base.html' %}
+{% load static %}
+{% block title %}样本上传{% endblock %}
+{% block sidenav %}
+    <li><a href="{% url 'sample_manage:sample_upload_html' %}">样本上传</a></li>
+    <li class="active"><a href="{% url 'sample_manage:sample_distribute_html' %}">样本分发</a></li>
+    <li><a href="{% url 'sample_manage:sample_compare_html' %}">样本对比</a></li>
+    <li><a href="{% url 'sample_manage:sample_merge_html' %}">样本合并</a></li>
+    <li><a href="{% url 'sample_manage:sample_statistics_html' %}">样本统计</a></li>
+    <li><a href="{% url 'sample_manage:sample_download_html' %}">样本下载</a></li>
+    <li><a href="{% url 'sample_manage:sample_delete_html' %}">样本删除</a></li>
+{% endblock %}
+{%  block css %}
+    <style type="text/css">
+        #span_error{
+            font-weight: bold;
+            color: #EE2D2D;
+        }
+    </style>w
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <h2>样本分发</h2>
+            <hr/>
+
+            <form class="form-horizontal" role="form" method="POST" action="{% url 'sample_manage:sample_distribute_api' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                      <label for="name" class="col-md-2 control-label">选择批次</label>
+                      <div class="col-md-3">
+                        <select id="compare_settings_list" name="settings_id" class="form-control">
+                            {% for result in result_list %}
+                                <option class="form-control" name="settings_id2name" value="{{ result.id }}">{{ result.id2name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="database" class="col-md-2 control-label">发送至标注数据库:</label>
+                    <div class="col-md-8">
+                        {% for db_name in databases %}
+                            <label><input type="checkbox" class="form-control" name="database" value="{{ db_name }}"> {{ db_name }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr/>
+                <button type="submit" class="col-md-offset-4 btn btn-danger" >确定并发送</button>
+            </form>
+        </div>
+    </div>
+    {% if result %}
+    <div class="row">
+        <div class="col-md-11">
+            <hr/>
+            <h2>发送结果:{{ result }}</h2>
+            <br>
+            <hr/>
+            <h2>如需删除：</h2>
+            <form class="form-horizontal" role="form" method="post" action="{% url 'sample_manage:sample_distribute_delete_api' %}">
+                <hr/>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">选择批次：{{ settings_id }}</label>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">选择数据库</label>
+                    <div class="col-md-5">
+                        {% for database in database_list %}
+                            <label><input type="checkbox" class="form-control" name="databases_list" value="{{ database }}"> {{ database }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-5">
+                        {% if content.delete_sample_flag %}
+                            <button type="submit" class="btn btn-danger">删除样本</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/sampleupload.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+            });
+        });
+
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}

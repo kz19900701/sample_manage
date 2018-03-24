@@ -1,0 +1,113 @@
+{% extends 'sample_manage/base.html' %}
+{% load static %}
+{% block title %}样本上传{% endblock %}
+{% block sidenav %}
+    <li><a href="{% url 'sample_manage:sample_upload_html' %}">样本上传</a></li>
+    <li><a href="{% url 'sample_manage:sample_distribute_html' %}">样本分发</a></li>
+    <li class="active"><a href="{% url 'sample_manage:sample_compare_html' %}">样本对比</a></li>
+    <li><a href="{% url 'sample_manage:sample_merge_html' %}">样本合并</a></li>
+    <li><a href="{% url 'sample_manage:sample_statistics_html' %}">样本统计</a></li>
+    <li><a href="{% url 'sample_manage:sample_download_html' %}">样本下载</a></li>
+    <li><a href="{% url 'sample_manage:sample_delete_html' %}">样本删除</a></li>
+
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <h2>样本对比</h2>
+            <hr/>
+
+            <form class="form-horizontal" role="form"  action="{% url 'sample_manage:sample_compare_api' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                      <label for="name" class="col-md-2 control-label">选择批次</label>
+                      <div class="col-md-3">
+                        <select id="compare_settings_list" name="settings_id" class="form-control">
+                            {% for result in result_list %}
+                                <option class="form-control" name="settings_id2name" value="{{ result.id }}">{{ result.id2name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                    <label for="name" class="col-md-3 control-label"><a href="#" onclick="query_data_compare_function();">查看已选批次数据情况</a></label>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3">
+                        <button  class="btn btn-danger form-control" type="submit" >开始对比</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+            <h2>对比结果</h2>
+            <hr/>
+            <form class="form-horizontal" role="form" action="{% url 'sample_manage:sample_double_check_distribute_api' %}" method="POST" >
+                <div class="form-group">
+                    <label for="settings_id" class="col-md-3 control-label">当前批次</label>
+                    <div  class="col-md-5">
+                        <input input id="settings_id" name="settings_id" style="border: 0px;outline:none;cursor: pointer;" type="text" value="{{ result.settings_id }} "/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">对比总数</label>
+                    <div id="sum_count" class="col-md-5">
+                        {{ result.sum_count }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">相同数量</label>
+                    <div id="same_count" class="col-md-5">
+                        {{ result.same_count }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">不同数量</label>
+                    <div id="diff_count" class="col-md-5">
+                        {{ result.diff_count }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button id="distribute_button" class="btn btn-circle-micro"
+                            style="border-radius:25px; width: 280px;height: 50px;background-color: #333333"
+                            value="{{ result.distribute }}"
+                            type="submit"
+                    ><span id="button_name" style="font-size: 20px;color: #FBC200"></span></button>
+                </div>
+            </form>
+
+    </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/compare.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            a = $('#distribute_button').val();
+            if (a){
+                $('#button_name').html("开始二次分发");
+                $('#distribute_button').show();
+            }else {
+                $('#distribute_button').hide()
+            }
+        });
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'sample_manage/base.html' %}
+{% load static %}
+{% block title %}样本删除{% endblock %}
+{% block sidenav %}
+{#    <li ><a href="add_monitor">添加监控<span class="sr-only">(current)</span></a>#}
+{#    </li>#}
+    <li><a href="{% url 'sample_manage:sample_upload_html' %}">样本上传</a></li>
+    <li><a href="{% url 'sample_manage:sample_distribute_html' %}">样本分发</a></li>
+    <li><a href="{% url 'sample_manage:sample_compare_html' %}">样本对比</a></li>
+    <li><a href="{% url 'sample_manage:sample_merge_html' %}">样本合并</a></li>
+    <li><a href="{% url 'sample_manage:sample_statistics_html' %}">样本统计</a></li>
+    <li><a href="{% url 'sample_manage:sample_download_html' %}">样本下载</a></li>
+    <li class="active"><a href="{% url 'sample_manage:sample_delete_html' %}">样本删除</a></li>
+
+
+
+{% endblock %}
+{%  block css %}
+    <style type="text/css">
+        #span_error{
+            font-weight: bold;
+            color: #EE2D2D;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-11">
+            <h2>样本删除</h2>
+            <hr/>
+            <form class="form-horizontal" role="form" method="POST" action="{% url 'sample_manage:sample_delete_api' %}" >
+               <div class="form-group">
+                    <label for="setting_type" class="col-md-3 control-label">Settings_id</label>
+                    <div class="col-md-4">
+                        <select id="settings_id" name="settings_id" class="form-control">
+                            {% for result in result_list %}
+                                <option class="form-control" value="{{ result.id }}">{{ result.name }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                    {{ err }}
+                </div>
+               <div class="form-group">
+                    <div class="col-md-offset-7">
+                        <button class="btn btn-danger" type="submit"> 删除样本</button>
+                    </div>
+                </div>
+            </form>
+
+
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript_file %}
+    <script src="{% static 'js/sample_manage/sample_delete.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+            });
+        });
+
+
+    </script>
+{% endblock %}
+
+{% block modal %}
+
+
+{% endblock %}
